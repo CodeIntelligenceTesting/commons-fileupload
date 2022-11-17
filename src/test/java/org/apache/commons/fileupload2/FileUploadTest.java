@@ -16,18 +16,25 @@
  */
 package org.apache.commons.fileupload2;
 
+import com.code_intelligence.jazzer.api.FuzzedDataProvider;
+import com.code_intelligence.jazzer.junit.FuzzTest;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
+import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Stream;
 
+import org.apache.commons.fileupload2.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload2.portlet.PortletFileUploadTest;
+import org.apache.commons.fileupload2.servlet.ServletFileUpload;
 import org.apache.commons.fileupload2.servlet.ServletFileUploadTest;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -52,10 +59,56 @@ public class FileUploadTest {
 
     // --- Test methods common to all implementations of a FileUpload
 
+
+
+    @FuzzTest
+    void myFuzzTest(FuzzedDataProvider data, FileUpload upload)
+            throws IOException, FileUploadException, MultipartStream.MalformedStreamException {
+//        DiskFileItemFactory factory = new DiskFileItemFactory();
+//        factory.setSizeThreshold(1000);
+//        factory.setRepository(new File("/tmp/abc"));
+//
+//        FileUpload upload = new ServletFileUpload(factory);
+        List<FileItem> fileItems = null;
+        try {
+            fileItems = Util.parseUpload(upload, data.consumeRemainingAsString());
+            Iterator<FileItem> iter = fileItems.iterator();
+//            while (iter.hasNext()) {
+//                FileItem item = iter.next();
+//
+//                if (item.isFormField()) {
+//                    if (item.isFormField()) {
+//                        item.getFieldName();
+//                        item.getString();
+//                    }
+//                } else {
+//                    if (!item.isFormField()) {
+//                        String fieldName = item.getFieldName();
+//                        String fileName = item.getName();
+//                        String contentType = item.getContentType();
+//                        boolean isInMemory = item.isInMemory();
+//                        long sizeInBytes = item.getSize();
+//                    }
+//                }
+//            }
+        } catch (Exception e) {
+
+        }
+
+
+        // Call the functions you want to test with the provided data and optionally
+        // assert that the results are as expected.
+
+        // If you want to know more about writing fuzz tests you can checkout the
+        // example projects at https://github.com/CodeIntelligenceTesting/cifuzz/tree/main/examples
+        // or have a look at our tutorial:
+        // https://github.com/CodeIntelligenceTesting/cifuzz/blob/main/docs/How-To-Write-A-Fuzz-Test.md
+    }
+
     @ParameterizedTest
     @MethodSource("data")
     public void testFileUpload(final FileUpload upload)
-            throws IOException, FileUploadException {
+            throws IOException, FileUploadException, MultipartStream.MalformedStreamException {
         final List<FileItem> fileItems = Util.parseUpload(upload,
                                                "-----1234\r\n" +
                                                "Content-Disposition: "
